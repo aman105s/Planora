@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://planora-e4cc.onrender.com',
         changeOrigin: true,
         secure: false,
       }

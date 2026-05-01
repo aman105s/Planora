@@ -19,12 +19,15 @@ import FullGallery from './pages/FullGallery';
 import AppDownload from './pages/AppDownload';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css'
+const API = import.meta.env.VITE_API_URL;
 
 function App() {
+  const API = import.meta.env.VITE_API_URL;
+  
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1234567890-mockclientid.apps.googleusercontent.com';
   
   return (
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId={clientId} API={API}>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />

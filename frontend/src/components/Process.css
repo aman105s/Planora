@@ -1,0 +1,110 @@
+.process-section {
+  padding: var(--section-padding);
+  background-color: var(--color-champagne-light);
+}
+
+.process-header {
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-champagne-dark);
+  z-index: 1;
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-step {
+  flex: 1;
+  text-align: center;
+  padding: 0 1rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.timeline-container.is-visible .timeline-step {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.timeline-container.is-visible .timeline-line {
+  animation: growLine 1.5s ease-out forwards;
+}
+
+@keyframes growLine {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.step-number {
+  width: 80px;
+  height: 80px;
+  background-color: var(--color-ivory);
+  border: 1px solid var(--color-champagne-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem auto;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-champagne-dark);
+  transition: all 0.5s ease;
+}
+
+.timeline-step:hover .step-number {
+  background-color: var(--color-champagne-dark);
+  color: var(--color-ivory);
+  transform: scale(1.1);
+}
+
+.step-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  color: var(--color-charcoal);
+  margin-bottom: 1rem;
+}
+
+.step-desc {
+  font-size: 0.95rem;
+  color: var(--color-slate-dark);
+  line-height: 1.6;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .timeline-steps {
+    flex-direction: column;
+    gap: 4rem;
+  }
+  .timeline-line {
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+  @keyframes growLine {
+    from { height: 0; }
+    to { height: 100%; }
+  }
+}

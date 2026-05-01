@@ -1,0 +1,90 @@
+.role-selection-page {
+  background-color: var(--color-ivory);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.role-selection-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 2rem;
+  text-align: center;
+}
+
+.role-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  color: var(--color-charcoal);
+  margin-bottom: 1rem;
+}
+
+.role-subtitle {
+  color: var(--color-slate-dark);
+  margin-bottom: 4rem;
+  font-size: 1.1rem;
+}
+
+.role-cards {
+  display: flex;
+  gap: 3rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.role-card {
+  flex: 1;
+  background-color: var(--color-white);
+  padding: 4rem 3rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-champagne-light);
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.role-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  border-color: var(--color-champagne);
+}
+
+.role-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--color-charcoal);
+  margin-bottom: 1rem;
+}
+
+.role-card-desc {
+  font-size: 0.95rem;
+  color: var(--color-slate);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.auth-btn-small {
+  margin-top: auto;
+  padding: 0.8rem 2rem;
+  width: 100%;
+}
+
+.btn-secondary.auth-btn-small {
+  color: var(--color-charcoal);
+  border-color: var(--color-slate);
+}
+
+.btn-secondary.auth-btn-small:hover {
+  border-color: var(--color-charcoal);
+}
+
+@media (max-width: 768px) {
+  .role-cards {
+    flex-direction: column;
+  }
+}

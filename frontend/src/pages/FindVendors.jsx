@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { handleGlobalLogoClick } from '../utils/auth';
+const API = import.meta.env.VITE_API_URL;
+
 
 export default function FindVendors() {
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ export default function FindVendors() {
         let query = [];
         if(selectedLocation && selectedLocation !== 'All India') query.push(`location=${encodeURIComponent(selectedLocation)}`);
         if(selectedCategory) query.push(`category=${encodeURIComponent(selectedCategory)}`);
-        const url = '/api/vendors?' + query.join('&');
+        const url = `${API}/api/vendors?` + query.join('&');
         
         const res = await fetch(url);
         const data = await res.json();
@@ -51,7 +53,7 @@ export default function FindVendors() {
     try {
       const token = localStorage.getItem('accessToken');
       if(!token) return navigate('/login');
-      await fetch('/api/messages', {
+      await fetch(`${API}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ receiverId: msgBoxFor.id, content: msgContent })
@@ -66,7 +68,7 @@ export default function FindVendors() {
     try {
       const token = localStorage.getItem('accessToken');
       if(!token) return navigate('/login');
-      await fetch('/api/bookings', {
+      await fetch(`${API}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ vendorId: bookingFor.id, coupleNames, weddingDateLocation, message: 'Requested from directory' })

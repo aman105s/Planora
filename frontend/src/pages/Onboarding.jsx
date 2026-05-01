@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API = import.meta.env.VITE_API_URL;
+
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ export default function Onboarding() {
     try {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        await fetch('/api/couples/profile', {
+        await fetch(`${API}/api/couples/profile`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ partnerName, weddingDate, guestCount, style, budget: Number(budget), priority, vendorRequirements })

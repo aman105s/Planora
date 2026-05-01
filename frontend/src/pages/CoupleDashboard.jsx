@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { parseJwt } from '../utils/auth';
+const API = import.meta.env.VITE_API_URL;
+
 
 function DashboardNav({ handleLogout }) {
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ function DashboardUI() {
       const token = localStorage.getItem('accessToken');
       if (!token) throw new Error('Authorization required.');
 
-      const response = await fetch('/api/auth/change-password', {
+      const response = await fetch(`${API}/api/auth/change-password`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -85,7 +87,7 @@ function DashboardUI() {
   const fetchBookings = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/bookings/client', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/bookings/client`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.bookings) {
         setActiveBookings(data.bookings.filter(b => b.status === 'active'));
@@ -97,7 +99,7 @@ function DashboardUI() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/couples/profile/me', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/couples/profile/me`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.profile) {
         setProfileData({
@@ -117,7 +119,7 @@ function DashboardUI() {
     setProfileMsg('');
     try {
         const token = localStorage.getItem('accessToken');
-        const res = await fetch('/api/couples/profile', {
+        const res = await fetch(`${API}/api/couples/profile`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(profileData)
@@ -132,7 +134,7 @@ function DashboardUI() {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/messages/conversations', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/messages/conversations`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.conversations) {
         setConversations(data.conversations);
@@ -144,7 +146,7 @@ function DashboardUI() {
   const fetchChat = async (userId) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch(`/api/messages/${userId}`, { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/messages/${userId}`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.messages) setMessages(data.messages);
     } catch(e){}
@@ -154,7 +156,7 @@ function DashboardUI() {
     if(!newMsgContent || !activeChatId) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await fetch('/api/messages', {
+      await fetch(`${API}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ receiverId: activeChatId, content: newMsgContent })

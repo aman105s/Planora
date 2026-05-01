@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { parseJwt } from '../utils/auth';
 import './Login.css';
+const API = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export default function Login() {
 
     if (showForgot) {
       try {
-        const res = await fetch('/api/auth/check-email', {
+        const res = await fetch(`${API}/api/auth/check-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
@@ -58,7 +59,7 @@ export default function Login() {
     }
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const endpoint = isLogin ? `${API}/api/auth/login` : `${API}/api/auth/register`;
       const parsedRolePayload = role === 'Vendor' ? 'admin' : 'user';
       const bodyPayload = isLogin 
         ? { username, password } 
@@ -83,7 +84,7 @@ export default function Login() {
         navigate(portalRoute);
       } else if (!isLogin && data.success) {
         // Successful Registration - Immediately fetch token natively
-        const loginRes = await fetch('/api/auth/login', {
+        const loginRes = await fetch(`${API}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
@@ -117,7 +118,7 @@ export default function Login() {
       setIsError(false);
       setIsLoading(true);
       try {
-        const res = await fetch('/api/auth/google', {
+        const res = await fetch(`${API}/api/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken: tokenResponse.access_token, role })
@@ -160,7 +161,7 @@ export default function Login() {
       setIsError(false);
       setIsLoading(true);
       try {
-        const res = await fetch('/api/auth/google', {
+        const res = await fetch(`${API}/api/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken: 'dev_mock_token', role })

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API = import.meta.env.VITE_API_URL;
 
 export default function VendorOnboarding() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function VendorOnboarding() {
     try {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        await fetch('/api/vendors/profile', {
+        await fetch(`${API}/api/vendors/profile`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ businessName, experienceYears: Number(experienceYears), contactMode, category, startingPrice, coverageAreas })

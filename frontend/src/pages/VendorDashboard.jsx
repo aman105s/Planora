@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { parseJwt } from '../utils/auth';
+const API = import.meta.env.VITE_API_URL;
 
 function VendorDashboardNav({ handleLogout }) {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ function VendorDashboardUI() {
   const fetchBookings = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/bookings/vendor', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/bookings/vendor`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.bookings) {
         setBookings(data.bookings);
@@ -41,7 +42,7 @@ function VendorDashboardUI() {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/messages/conversations', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/messages/conversations`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.conversations) {
         setConversations(data.conversations);
@@ -53,7 +54,7 @@ function VendorDashboardUI() {
   const fetchChat = async (userId) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch(`/api/messages/${userId}`, { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/messages/${userId}`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.messages) setMessages(data.messages);
     } catch(e){}
@@ -63,7 +64,7 @@ function VendorDashboardUI() {
     if(!newMsgContent || !activeChatId) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await fetch('/api/messages', {
+      await fetch(`${API}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ receiverId: activeChatId, content: newMsgContent })
@@ -76,7 +77,7 @@ function VendorDashboardUI() {
   const handleAccept = async (id) => {
     try {
       const token = localStorage.getItem('accessToken');
-      await fetch(`/api/bookings/${id}/status`, {
+      await fetch(`${API}/api/bookings/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: 'active' })
@@ -127,7 +128,7 @@ function VendorDashboardUI() {
       const fetchImages = async () => {
         try {
           const token = localStorage.getItem('accessToken');
-          const res = await fetch('/api/image/get', {
+          const res = await fetch(`${API}/api/image/get`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const data = await res.json();
@@ -147,7 +148,7 @@ function VendorDashboardUI() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/vendors/profile/me', { headers: { 'Authorization': `Bearer ${token}` }});
+      const res = await fetch(`${API}/api/vendors/profile/me`, { headers: { 'Authorization': `Bearer ${token}` }});
       const data = await res.json();
       if(data.success && data.profile) {
         setProfileForm({
@@ -165,7 +166,7 @@ function VendorDashboardUI() {
     setProfileMsg('');
     try {
         const token = localStorage.getItem('accessToken');
-        const res = await fetch('/api/vendors/profile', {
+        const res = await fetch(`${API}/api/vendors/profile`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({...profileForm, coverageAreas: [profileForm.location]})
@@ -191,7 +192,7 @@ function VendorDashboardUI() {
 
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await fetch('/api/image/upload', {
+      const res = await fetch(`${API}/api/image/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData

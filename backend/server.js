@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 // Allow requests from the React frontend (Vite dev server)
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
+    origin: ['https://planora-dun-chi.vercel.app', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
     credentials: true
 }));
 

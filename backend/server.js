@@ -18,12 +18,17 @@ const PORT = process.env.PORT || 3000;
 
 // Allow requests from the React frontend (Vite dev server)
 app.use(cors({
-    origin: ['https://planora-dun-chi.vercel.app', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: "https://planora-dun-chi.vercel.app",
     credentials: true
 }));
 
-app.options('*', cors());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://planora-dun-chi.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
+
 //middleware to parse incoming JSON data
 app.use(express.json());
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { parseJwt } from '../utils/auth';
 const API = import.meta.env.VITE_API_URL;
@@ -20,9 +20,16 @@ function VendorDashboardNav({ handleLogout }) {
 }
 
 function VendorDashboardUI() {
-  const [activeTab, setActiveTab] = useState('Overview Analytics');
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialTab = queryParams.get('tab') === 'leads' ? 'Qualified Leads' :
+                     queryParams.get('tab') === 'payments' ? 'Secure Payments' :
+                     'Overview Analytics';
+
+  const [activeTab, setActiveTab] = useState(initialTab);
   
   const [bookings, setBookings] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [activeChatId, setActiveChatId] = useState(null);
@@ -36,6 +43,26 @@ function VendorDashboardUI() {
       if(data.success && data.bookings) {
         setBookings(data.bookings);
       }
+    } catch(e){}
+  };
+
+  const fetchLeads = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API}/api/leads/vendor`, { headers: { 'Authorization': `Bearer ${token}` }});
+      const data = await res.json();
+      if(data.success && data.leads) setLeads(data.leads);
+    } catch(e){}
+  };
+
+  const unlockLead = async (id) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      await fetch(`${API}/api/leads/${id}/unlock`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+      });
+      fetchLeads();
     } catch(e){}
   };
 
@@ -87,7 +114,8 @@ function VendorDashboardUI() {
   };
 
   useEffect(() => {
-    if(activeTab === 'Booking Requests') fetchBookings();
+    if(activeTab === 'Booking Requests' || activeTab === 'Secure Payments') fetchBookings();
+    if(activeTab === 'Qualified Leads') fetchLeads();
     if(activeTab === 'Messages') fetchConversations();
   }, [activeTab]);
 
@@ -153,7 +181,7 @@ function VendorDashboardUI() {
       if(data.success && data.profile) {
         setProfileForm({
           businessName: data.profile.businessName || '',
-          category: data.profile.category || '',
+          category: Array.isArray(data.profile.category) ? data.profile.category : [data.profile.category].filter(Boolean),
           location: data.profile.location || (data.profile.coverageAreas && data.profile.coverageAreas[0]) || '',
           startingPrice: data.profile.startingPrice || ''
         });
@@ -214,7 +242,9 @@ function VendorDashboardUI() {
 
   const tabs = [
     'Overview Analytics',
-    `Booking Requests (${bookings.filter(b => b.status === 'Pending').length})`,
+    'Qualified Leads',
+    `Booking Requests (${bookings.filter(b => b.status === 'pending').length})`,
+    'Secure Payments',
     'Messages',
     'Portfolio Upload',
     'Profile Settings'
@@ -261,14 +291,63 @@ function VendorDashboardUI() {
                   <div className="text-3xl font-serif text-gray-800">8</div>
                 </div>
                 <div className="p-6 border border-gray-100 rounded-sm bg-gray-50/50">
+                  <div className="text-gray-500 text-sm mb-1">Leads Received</div>
+                  <div className="text-3xl font-serif text-gray-800">{leads.length || 0}</div>
+                </div>
+                <div className="p-6 border border-gray-100 rounded-sm bg-gray-50/50">
                   <div className="text-gray-500 text-sm mb-1">Profile Views (30d)</div>
                   <div className="text-3xl font-serif text-gray-800">1,204</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div className="p-6 border border-gray-100 rounded-sm bg-gray-50/50">
+                  <div className="text-gray-500 text-sm mb-1">Total Earnings</div>
+                  <div className="text-3xl font-serif text-gray-800">₹{bookings.reduce((sum, b) => sum + (b.amount || 0) - (b.commission || 0), 0).toLocaleString()}</div>
+                </div>
+                <div className="p-6 border border-gray-100 rounded-sm bg-gray-50/50">
+                  <div className="text-gray-500 text-sm mb-1">Conversion Rate</div>
+                  <div className="text-3xl font-serif text-gray-800">{leads.length ? Math.round((bookings.length / leads.length) * 100) : 0}%</div>
                 </div>
               </div>
               <h3 className="font-serif text-2xl text-gray-800 mb-4">Performance Highlights</h3>
               <div className="h-48 border-2 border-dashed border-gray-200 rounded-md flex items-center justify-center text-gray-400">
                   [Interactive Analytics Chart Placeholder]
               </div>
+            </div>
+          )}
+
+          {activeTab === 'Qualified Leads' && (
+            <div className="animate-fade-in">
+              <h3 className="font-serif text-2xl text-gray-800 mb-6">Incoming Qualified Leads</h3>
+              {leads.length === 0 ? (
+                <p className="text-gray-500 italic">No leads received yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {leads.map(lead => (
+                    <div key={lead._id} className="border border-gray-200 p-6 rounded-md shadow-sm">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h4 className="font-bold text-gray-800">{lead.name}</h4>
+                          <p className="text-sm text-gray-500">📅 {lead.weddingDateLocation} · 💰 {lead.budget}</p>
+                        </div>
+                        <span className={`px-2 py-1 text-xs font-bold rounded-full ${lead.status === 'unlocked' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                          {lead.status.toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-600 mb-4 italic">"{lead.message}"</div>
+                      {lead.status === 'new' ? (
+                        <button onClick={() => unlockLead(lead._id)} className="bg-[#D2826C] text-white px-6 py-2 rounded-md text-sm font-bold shadow-sm hover:opacity-90">
+                          Unlock Contact Details (₹{lead.priceToUnlock})
+                        </button>
+                      ) : (
+                        <div className="text-sm text-green-700 font-medium bg-green-50 p-3 rounded-md">
+                          Contact Info Revealed! You can now message them via the Messages tab.
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -302,6 +381,36 @@ function VendorDashboardUI() {
                       </div>
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'Secure Payments' && (
+            <div className="animate-fade-in">
+              <h3 className="font-serif text-2xl text-gray-800 mb-6">Payouts & Secure Payments</h3>
+              {bookings.length === 0 ? (
+                <p className="text-gray-500 italic">No payments received yet.</p>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="py-3 text-sm text-gray-500">Client</th>
+                      <th className="py-3 text-sm text-gray-500">Gross Amount</th>
+                      <th className="py-3 text-sm text-gray-500">Commission</th>
+                      <th className="py-3 text-sm text-gray-500">Net Payout</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bookings.map(b => (
+                      <tr key={b._id} className="border-b border-gray-100">
+                        <td className="py-4 text-sm font-medium">{b.coupleNames || b.clientId?.username}</td>
+                        <td className="py-4 text-sm text-gray-600">₹{b.amount?.toLocaleString() || 0}</td>
+                        <td className="py-4 text-sm text-red-500">- ₹{b.commission?.toLocaleString() || 0}</td>
+                        <td className="py-4 text-sm font-bold text-green-700">₹{((b.amount||0) - (b.commission||0)).toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
             </div>
           )}
@@ -356,14 +465,22 @@ function VendorDashboardUI() {
                         <input type="text" value={profileForm.businessName} onChange={(e) => setProfileForm({...profileForm, businessName: e.target.value})} className="w-full border border-gray-200 p-2 text-sm focus:outline-none focus:border-wedding-gold transition" />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-500 uppercase tracking-widest font-semibold block mb-1">Primary Category</label>
-                        <select value={profileForm.category} onChange={(e) => setProfileForm({...profileForm, category: e.target.value})} className="w-full border border-gray-200 p-2 text-sm focus:outline-none focus:border-wedding-gold transition bg-white">
-                            <option value="">Select Category</option>
-                            <option value="Palace Venues">Palace Venues</option>
-                            <option value="Destination Planners">Destination Planners</option>
-                            <option value="Cinematography">Cinematography</option>
-                            <option value="Bespoke Decor">Bespoke Decor</option>
+                        <label className="text-xs text-gray-500 uppercase tracking-widest font-semibold block mb-1">Categories (Ctrl+Click for multiple)</label>
+                        <select multiple value={profileForm.category} onChange={(e) => {
+                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          setProfileForm({...profileForm, category: values});
+                        }} className="w-full border border-gray-200 p-2 text-sm focus:outline-none focus:border-wedding-gold transition bg-white h-24">
+                            <option value="Photographer">Photographer</option>
+                            <option value="Videographer">Videographer</option>
                             <option value="Makeup Artist">Makeup Artist</option>
+                            <option value="Wedding Planner">Wedding Planner</option>
+                            <option value="Caterer">Caterer</option>
+                            <option value="Decorator">Decorator</option>
+                            <option value="DJ & Music">DJ & Music</option>
+                            <option value="Venue">Venue</option>
+                            <option value="Bridal Wear">Bridal Wear</option>
+                            <option value="Groom Wear">Groom Wear</option>
+                            <option value="Jewelry">Jewelry</option>
                         </select>
                       </div>
                       <div>

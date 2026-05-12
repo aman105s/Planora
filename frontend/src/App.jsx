@@ -11,12 +11,14 @@ import VendorPortal from './pages/VendorPortal';
 import Onboarding from './pages/Onboarding';
 import VendorOnboarding from './pages/VendorOnboarding';
 import FindVendors from './pages/FindVendors';
+import VendorDetails from './pages/VendorDetails';
 import StartPlanning from './pages/StartPlanning';
 import RegisterVendor from './pages/RegisterVendor';
 import PricingCheckout from './pages/PricingCheckout';
 import ExperienceDetails from './pages/ExperienceDetails';
 import FullGallery from './pages/FullGallery';
 import AppDownload from './pages/AppDownload';
+import VendorOpportunities from './pages/VendorOpportunities';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css'
 const API = import.meta.env.VITE_API_URL;
@@ -48,6 +50,8 @@ function App() {
           </PrivateRoute>
         } />
         <Route path="/find-vendors" element={<FindVendors />} />
+        <Route path="/vendor/:id" element={<VendorDetails />} />
+        <Route path="/vendor/opportunities/:category" element={<VendorOpportunities />} />
         <Route path="/start-planning" element={<StartPlanning />} />
         <Route path="/register-vendor" element={<RegisterVendor />} />
         <Route path="/pricing-checkout" element={<PricingCheckout />} />

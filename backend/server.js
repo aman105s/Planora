@@ -10,22 +10,40 @@ const vendorRoutes = require('./routes/vendor-routes');
 const coupleRoutes = require('./routes/couple-routes');
 const bookingRoutes = require('./routes/booking-routes');
 const messageRoutes = require('./routes/message-routes');
+const leadRoutes = require('./routes/leadRoute');
 
 connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Allow requests from the React frontend (Vite dev server)
+// Allow requests from the React frontend (Vite dev server or Vercel prod)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://planora-dun-chi.vercel.app"
+];
+
 app.use(cors({
-    origin: "https://planora-dun-chi.vercel.app",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g. mobile apps, curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true
 }));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://planora-dun-chi.vercel.app");
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
@@ -40,6 +58,7 @@ app.use('/api/vendors', vendorRoutes);
 app.use('/api/couples', coupleRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/leads', leadRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

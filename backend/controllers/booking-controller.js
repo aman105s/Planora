@@ -1,18 +1,29 @@
 const Booking = require('../models/booking');
 const VendorProfile = require('../models/vendorProfile');
+const Message = require('../models/message');
 
 const createBooking = async (req, res) => {
     try {
-        const { vendorId, coupleNames, weddingDateLocation, message } = req.body;
+        const { vendorId, coupleNames, weddingDateLocation, message, name, weddingDate, budget } = req.body;
         const booking = new Booking({
             clientId: req.userInfo.userId,
             vendorId,
-            coupleNames,
-            weddingDateLocation,
+            coupleNames: coupleNames || name,
+            weddingDateLocation: weddingDateLocation || `${weddingDate || ''} ${budget ? `(Budget: ${budget})` : ''}`.trim(),
             message,
             status: 'pending'
         });
         await booking.save();
+
+        if (message && message.trim() !== '') {
+            const initialMsg = new Message({
+                senderId: req.userInfo.userId,
+                receiverId: vendorId,
+                content: message
+            });
+            await initialMsg.save();
+        }
+
         res.status(201).json({ success: true, booking });
     } catch (error) {
         console.error(error);

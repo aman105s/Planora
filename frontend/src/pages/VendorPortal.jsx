@@ -1,148 +1,236 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import photographerImg from '../assets/vendor_photographer.png';
 
-function Nav() {
+const API = import.meta.env.VITE_API_URL;
+
+const CATEGORY_LIST = [
+  { name:'Photographer', img: photographerImg, icon:'📸' },
+  { name:'Videographer', img:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=600&auto=format&fit=crop', icon:'🎥' },
+  { name:'Makeup Artist', img:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&auto=format&fit=crop', icon:'💄' },
+  { name:'Wedding Planner', img:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop', icon:'📋' },
+  { name:'Caterer', img:'https://images.unsplash.com/photo-1555244162-803834f70033?w=600&auto=format&fit=crop', icon:'🍽️' },
+  { name:'Decorator', img:'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop', icon:'🌸' },
+  { name:'DJ & Music', img:'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=600&auto=format&fit=crop', icon:'🎵' },
+  { name:'Venue', img:'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop', icon:'🏰' },
+];
+
+const ALL_CATS = ['Bridal Wear','Groom Wear','Jewelry','Mehndi Artist','Choreographer','Invitation Designer','Pandit','Honeymoon Package','Vintage Car Rental','Photo Booth'];
+
+const TESTIMONIALS = [
+  { name:'Ravi Kapoor Photography', city:'Mumbai', type:'Photographer', text:'Planora helped me triple my inquiries in 6 months. The platform handles all lead management so I can focus on my craft.', earnings:'₹8L+', avatar:'📸' },
+  { name:'Devika Narain Events', city:'Delhi', type:'Event Planner', text:'My calendar was fully booked within 2 months of joining. Best investment for my business.', earnings:'₹22L+', avatar:'🎪' },
+  { name:'Bliss Makeup Studio', city:'Delhi', type:'Makeup Artist', text:'The lead quality is exceptional. Couples are serious and well-qualified. Zero time wasted on cold leads.', earnings:'₹6L+', avatar:'💄' },
+];
+
+const HOW_STEPS = [
+  { num:1, icon:'📝', title:'Register Free', desc:'Create your vendor account in under 2 minutes. No credit card required.', detail:'Fill your basic profile — business name, category, and location. Your account is live instantly.' },
+  { num:2, icon:'🖼️', title:'Build Your Profile', desc:'Upload portfolio, set pricing, write your story.', detail:'Add photos, list your services, set package pricing. The richer your profile, the more leads you get.' },
+  { num:3, icon:'📊', title:'Get Discovered', desc:'Couples searching in your city find you first.', detail:'Our algorithm matches you to couples based on location, category, and budget. You appear in search results automatically.' },
+  { num:4, icon:'💌', title:'Receive Leads', desc:'Qualified couples send inquiries directly.', detail:'Leads land in your dashboard instantly. Couple details, wedding date, and budget — all pre-qualified.' },
+  { num:5, icon:'🎊', title:'Close & Grow', desc:'Convert leads to bookings and grow revenue.', detail:'Use our messaging system to negotiate and close. All communication stays on-platform for your protection.' },
+];
+
+function SignupModal({ onClose }) {
   const navigate = useNavigate();
   return (
-    <nav className="flex justify-between items-center py-4 px-10 bg-[#FAF6F4] sticky top-0 z-50">
-      <div className="font-serif text-3xl tracking-wide cursor-pointer flex items-center" onClick={() => navigate('/portal/vendor')}>
-        <span className="italic font-light italic text-[#B58A73]">V<span className="text-xl">edan</span></span>
-        <span className="text-xs uppercase ml-2 tracking-widest text-[#DB927D]">vendor partner</span>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{background:'rgba(0,0,0,0.6)',backdropFilter:'blur(6px)'}}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
+        <div className="text-4xl mb-3">🎉</div>
+        <h3 className="font-serif text-2xl text-gray-800 mb-2">Join as a Vendor</h3>
+        <p className="text-gray-400 text-sm mb-6">Start getting qualified leads from couples planning their dream wedding.</p>
+        <button onClick={() => { onClose(); navigate('/register-vendor'); }}
+          className="w-full py-3 mb-3 text-sm font-semibold text-white !rounded-xl" style={{background:'#D2826C'}}>
+          Create Vendor Account
+        </button>
+        <button onClick={() => { onClose(); navigate('/login?role=vendor'); }}
+          className="w-full py-3 text-sm font-semibold text-gray-600 border border-gray-200 !rounded-xl hover:bg-gray-50">
+          Already have an account? Sign In
+        </button>
+        <button onClick={onClose} className="mt-4 text-xs text-gray-400 hover:text-gray-600">Cancel</button>
       </div>
-      <div className="flex gap-8 items-center text-sm font-semibold text-gray-700">
-        <a href="#features" className="hover:text-[#DB927D] transition">Features</a>
-        <a href="#categories" className="hover:text-[#DB927D] transition">Categories</a>
-        <a href="#" className="hover:text-[#DB927D] transition">Home</a>
-        <a href="#pricing" className="hover:text-[#DB927D] transition">Pricing ▾</a>
-        <button onClick={() => navigate('/dashboard/vendor')} className="bg-[#D2826C] text-white px-6 py-2 rounded shadow-sm hover:bg-[#b06752] transition">Vendor Dashboard</button>
+    </div>
+  );
+}
+
+function StepModal({ step, onClose }) {
+  if (!step) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{background:'rgba(0,0,0,0.5)',backdropFilter:'blur(4px)'}} onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8" onClick={e=>e.stopPropagation()}>
+        <div className="text-5xl mb-4 text-center">{step.icon}</div>
+        <h3 className="font-serif text-2xl text-gray-800 text-center mb-2">Step {step.num}: {step.title}</h3>
+        <p className="text-gray-500 text-sm text-center mb-4">{step.detail}</p>
+        <button onClick={onClose} className="w-full py-2.5 text-sm font-semibold text-white !rounded-xl" style={{background:'#D2826C'}}>Got it</button>
       </div>
+    </div>
+  );
+}
+
+function Nav({ onSignup }) {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem('accessToken');
+  return (
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-[#f0e3de] px-6 py-4 flex justify-between items-center shadow-sm">
+      <div className="font-serif text-2xl tracking-wide cursor-pointer flex items-center gap-1" onClick={() => navigate('/portal/vendor')}>
+        <span style={{color:'#D2826C'}}>V</span>EDAN <span className="text-xs font-sans text-[#D2826C] ml-1 tracking-widest uppercase hidden sm:inline">Vendor Partner</span>
+      </div>
+      <div className="hidden md:flex gap-6 items-center text-sm font-semibold text-gray-700">
+        <a href="#features" className="hover:text-[#D2826C] transition">Features</a>
+        <a href="#categories" className="hover:text-[#D2826C] transition">Categories</a>
+        <a href="#how-it-works" className="hover:text-[#D2826C] transition">How It Works</a>
+        <a href="#pricing" className="hover:text-[#D2826C] transition">Pricing</a>
+        {isLoggedIn
+          ? <button onClick={() => navigate('/dashboard/vendor')} className="bg-[#D2826C] text-white px-5 py-2 !rounded-xl text-sm font-semibold hover:bg-[#b06752] transition">My Dashboard</button>
+          : <button onClick={onSignup} className="bg-[#D2826C] text-white px-5 py-2 !rounded-xl text-sm font-semibold hover:bg-[#b06752] transition">Start Free</button>
+        }
+      </div>
+      <button className="md:hidden text-gray-600 text-xl" onClick={() => setOpen(o=>!o)}>☰</button>
+      {open && (
+        <div className="absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg z-50 flex flex-col gap-4 p-6 text-sm font-semibold text-gray-700 md:hidden">
+          <a href="#features" onClick={()=>setOpen(false)}>Features</a>
+          <a href="#how-it-works" onClick={()=>setOpen(false)}>How It Works</a>
+          <a href="#pricing" onClick={()=>setOpen(false)}>Pricing</a>
+          {isLoggedIn ? <span onClick={()=>{navigate('/dashboard/vendor');setOpen(false);}} className="cursor-pointer text-[#D2826C]">My Dashboard</span>
+            : <span onClick={()=>{onSignup();setOpen(false);}} className="cursor-pointer text-[#D2826C]">Start Free →</span>}
+        </div>
+      )}
     </nav>
   );
 }
 
-function Hero() {
+function Hero({ onSignup }) {
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('accessToken');
+
   return (
-    <section className="relative w-full h-[600px] bg-cover bg-center flex flex-col items-center justify-center text-center" style={{backgroundImage: "url('/vendor-hero-bg.jpg')"}}>
-      <div className="relative z-10 w-full max-w-6xl px-6 md:pl-20 text-left flex justify-start items-center h-full">
-        <div className="max-w-xl">
-           <h1 className="sr-only">Grow Your Wedding Business with Us</h1>
-           <p className="sr-only">Get discovered by thousands of couples actively planning their weddings.</p>
+    <section className="relative w-full min-h-[580px] flex items-center" style={{backgroundImage:"url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1400&auto=format&fit=crop')", backgroundSize:'cover', backgroundPosition:'center'}}>
+      <div className="absolute inset-0" style={{background:'linear-gradient(135deg, rgba(30,15,5,0.82) 0%, rgba(100,40,20,0.5) 60%, transparent 100%)'}} />
+      <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-16 py-20">
+        <div className="max-w-2xl">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-amber-300 mb-4">India's #1 Wedding Vendor Platform</span>
+          <h1 className="font-serif text-4xl md:text-6xl text-white leading-tight mb-4">
+            Grow Your Wedding Business with <span style={{color:'#F5C6B5'}}>Planora</span>
+          </h1>
+          <p className="text-gray-300 text-base md:text-lg mb-8 leading-relaxed">
+            Get discovered by thousands of couples. Receive qualified leads. Close more bookings — all without cold calls.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => isLoggedIn ? navigate('/dashboard/vendor') : onSignup()}
+              style={{background:'#D2826C', borderRadius:'999px'}}
+              className="text-white px-8 py-3.5 font-semibold shadow-xl hover:bg-[#b06752] transition text-sm">
+              {isLoggedIn ? 'Go to My Dashboard →' : 'Start Free — No Credit Card'}
+            </button>
+            <a href="#how-it-works" style={{borderRadius:'999px'}} className="text-white border border-white/40 px-7 py-3.5 font-semibold hover:bg-white/10 transition text-sm">
+              How It Works ↓
+            </a>
+          </div>
+          <div className="flex gap-6 mt-8 text-sm text-gray-300">
+            <span>✓ Free to join</span>
+            <span>✓ No cold leads</span>
+            <span>✓ 10,000+ couples/month</span>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+function VendorFeatureCard({ icon, title, desc, route }) {
+  const navigate = useNavigate();
+  return (
+    <div onClick={() => navigate(route)} className="p-6 bg-white rounded-2xl shadow-sm border border-[#f5ece9] flex flex-col hover:shadow-xl hover:scale-[1.04] cursor-pointer transition-all duration-300">
+      <div className="text-3xl mb-3">{icon}</div>
+      <h3 className="font-bold text-gray-800 mb-1 text-sm">{title}</h3>
+      <p className="text-gray-500 text-xs leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
 function Features() {
   const feats = [
-    { icon: '🚀', title: 'Boost Your Visibility', desc: 'Reach more clients' },
-    { icon: '📅', title: 'Manage Bookings Easily', desc: 'Handle all inquiries' },
-    { icon: '⭐', title: 'Get Reviews & Ratings', desc: 'Build your reputation' },
-    { icon: '📈', title: 'Track Your Performance', desc: 'Monitor your growth' },
+    { icon:'🚀', title:'Instant Visibility', desc:'Your profile goes live immediately and appears in couple searches from day one.', route:'/vendor-onboarding' },
+    { icon:'💌', title:'Qualified Leads', desc:'Only serious couples with budgets matching your pricing reach you.', route:'/dashboard/vendor?tab=leads' },
+    { icon:'📊', title:'Smart Dashboard', desc:'Track views, inquiries, and conversion rates. Know what works.', route:'/dashboard/vendor?tab=overview' },
+    { icon:'🔒', title:'Secure Payments', desc:'All payments flow through Planora. No direct money handling stress.', route:'/dashboard/vendor?tab=payments' },
   ];
   return (
-    <section id="features" className="px-6 -mt-16 relative z-20 pb-12">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-6">
-        {feats.map(f => (
-          <div key={f.title} className="p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm border border-[#f5ece9] flex flex-col items-start hover:shadow-md transition">
-            <div className="text-2xl mb-2">{f.icon}</div>
-            <h3 className="font-bold text-gray-800 mb-1">{f.title}</h3>
-            <p className="text-gray-500 text-sm">{f.desc}</p>
-          </div>
-        ))}
+    <section id="features" className="px-6 -mt-14 relative z-20 pb-12">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-5">
+        {feats.map(f => <VendorFeatureCard key={f.title} {...f} />)}
       </div>
     </section>
   );
 }
 
-function Categories() {
-  const [showAll, setShowAll] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
+function Categories({ onSignup }) {
   const navigate = useNavigate();
+  const [counts, setCounts] = useState({});
+  const [showAll, setShowAll] = useState(false);
+  const [hovered, setHovered] = useState(null);
 
-  const handleShowAll = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      setShowAll(true);
-      setIsExiting(false);
-    }, 350);
-  };
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const c = {};
+      await Promise.all(CATEGORY_LIST.map(async cat => {
+        try {
+          const res = await fetch(`${API}/api/vendors?category=${encodeURIComponent(cat.name)}`);
+          const data = await res.json();
+          c[cat.name] = data.success ? data.data.length : 0;
+        } catch { c[cat.name] = 0; }
+      }));
+      setCounts(c);
+    };
+    fetchCounts();
+  }, []);
 
-  const primaryCats = [
-    { name: 'Photographer', img: photographerImg },
-    { name: 'Videographer', img: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Makeup Artist', img: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&q=80&w=600' },
-    { name: 'Wedding Planner', img: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=600' },
-  ];
-
-  const allCats = [
-    'Exclusive Palace Venues', 'Fine Art Photography', 'Bridal Makeup', 
-    'Luxury Catering Services', 'Mandap & Decorators', 'Live Bands & DJs', 
-    'Bridal Designer Wear', 'Celebrity Mehndi Artists', 'Wedding Choreographers', 
-    'Invites & Gifting', 'Premium Event Planners', 'Jewelers & Trousseau', 
-    'Vintage Car Rentals', 'Honeymoon Specialists', 'Pandit & Ceremonies'
-  ];
-  
   return (
-    <section id="categories" className="py-12 px-6 bg-[#FCF8F6]">
+    <section id="categories" className="py-14 px-6" style={{background:'#FCF8F6'}}>
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-serif text-3xl font-bold text-gray-800 mb-8 border-t border-[#f0e3de] pt-8">Our Categories</h2>
-        
-        <style>
-          {`
-            @keyframes slideLeftOut {
-              0% { opacity: 1; transform: translateX(0); }
-              100% { opacity: 0; transform: translateX(-30px); }
-            }
-            @keyframes bounceIn {
-              0% { opacity: 0; transform: scale(0.95) translateY(15px); }
-              60% { opacity: 1; transform: scale(1.02) translateY(-3px); }
-              80% { transform: scale(0.98) translateY(2px); }
-              100% { opacity: 1; transform: scale(1) translateY(0); }
-            }
-            .animate-slide-out {
-              animation: slideLeftOut 0.35s ease-in forwards;
-            }
-            .animate-bounce-in {
-              animation: bounceIn 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-            }
-          `}
-        </style>
-
-        {!showAll ? (
-          <div className={"flex flex-col md:flex-row items-center gap-6 " + (isExiting ? "animate-slide-out" : "")}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shadow-sm p-4 bg-white rounded-xl border border-gray-50 flex-1 w-full">
-              {primaryCats.map(c => (
-                <div
-                  key={c.name}
-                  onClick={() => navigate(`/find-vendors?category=${encodeURIComponent(c.name)}&from=vendor`)}
-                  className="flex flex-col items-center bg-white rounded overflow-hidden group border border-gray-100 pb-2 cursor-pointer hover:shadow-md transition duration-300">
-                  <img src={c.img} alt={c.name} className="w-full h-28 object-cover object-center group-hover:scale-105 transition duration-500"/>
-                  <h4 className="mt-2 text-xs font-semibold text-gray-700 group-hover:text-[#DB927D] transition">{c.name}</h4>
-                </div>
-              ))}
-            </div>
-            {/* The Arrow Button - Not a box */}
-            <div onClick={handleShowAll} className="flex flex-col items-center cursor-pointer group px-2">
-               <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md text-[#DB927D] group-hover:scale-110 transition duration-300 border border-pink-50">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-               </div>
-               <h4 className="mt-3 text-xs font-semibold text-[#DB927D] opacity-0 group-hover:opacity-100 transition duration-300">View All</h4>
-            </div>
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="font-serif text-3xl text-gray-800">High Demand Categories</h2>
+            <p className="text-gray-400 text-sm mt-1">Join hundreds of professionals already getting booked daily.</p>
           </div>
-        ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 relative animate-bounce-in">
-            <button onClick={() => setShowAll(false)} className="absolute top-4 right-4 text-gray-400 hover:text-[#DB927D] text-sm font-medium transition">✕ Close List</button>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
-              {allCats.map(c => (
-                <div
-                  key={c}
-                  onClick={() => navigate(`/find-vendors?category=${encodeURIComponent(c)}&from=vendor`)}
-                  className="py-4 px-2 shadow-sm border border-transparent hover:border-[#DB927D] cursor-pointer transition flex items-center justify-center rounded-lg bg-[#FAF6F4] hover:bg-white text-center group">
-                  <h4 className="font-medium text-gray-700 text-xs leading-relaxed group-hover:text-[#DB927D] transition">{c}</h4>
+          <button onClick={() => setShowAll(s=>!s)} className="text-[#D2826C] text-sm font-semibold hover:underline !rounded-none !shadow-none !transform-none" style={{background:'none',border:'none'}}>
+            {showAll ? 'Show Less' : 'View All →'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {CATEGORY_LIST.map(cat => (
+            <div key={cat.name} className="relative overflow-hidden rounded-2xl cursor-pointer group h-40 bg-gray-100"
+              onMouseEnter={() => setHovered(cat.name)} onMouseLeave={() => setHovered(null)}
+              onClick={() => navigate(`/vendor/opportunities/${encodeURIComponent(cat.name)}`)}>
+              <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 transition-all duration-300" style={{background: hovered===cat.name ? 'rgba(210,130,108,0.8)' : 'rgba(0,0,0,0.3)'}} />
+              {hovered === cat.name ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                  <span className="text-2xl mb-1">{cat.icon}</span>
+                  <span className="font-bold text-sm text-center px-2">Explore Opportunities →</span>
+                  <span className="text-xs mt-1 bg-white/20 px-2 py-0.5 rounded-full">{counts[cat.name] ?? '...'} vendors</span>
+                </div>
+              ) : (
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h4 className="text-white font-semibold text-sm">{cat.name}</h4>
+                  <span className="text-white/70 text-xs">{counts[cat.name] ?? '...'} vendors</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {showAll && (
+          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <h4 className="font-semibold text-gray-700 text-sm mb-4">More Categories</h4>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {ALL_CATS.map(c => (
+                <div key={c} onClick={() => navigate(`/vendor/opportunities/${encodeURIComponent(c)}`)}
+                  className="py-3 px-3 border border-[#f0e3de] cursor-pointer hover:border-[#D2826C] hover:bg-[#FFF7ED] transition text-center rounded-xl">
+                  <span className="text-xs font-medium text-gray-700">{c}</span>
                 </div>
               ))}
             </div>
@@ -154,154 +242,157 @@ function Categories() {
 }
 
 function HowItWorks() {
-  const steps = [
-    { num: 1, text: "Register" },
-    { num: 2, text: "Create Profile" },
-    { num: 3, text: "Upload Portfolio" },
-    { num: 4, text: "Get Leads" },
-    { num: 5, text: "Get Booked" }
+  const [activeStep, setActiveStep] = useState(null);
+  return (
+    <section id="how-it-works" className="py-16 px-6 bg-white">
+      {activeStep && <StepModal step={activeStep} onClose={() => setActiveStep(null)} />}
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="font-serif text-3xl text-gray-800 mb-2">How It Works</h2>
+          <p className="text-gray-400 text-sm">From signup to your first booking — in days, not months</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {HOW_STEPS.map((s, i) => (
+            <div key={s.num} onClick={() => setActiveStep(s)}
+              className="relative flex flex-col items-center text-center p-5 rounded-2xl cursor-pointer border-2 border-transparent hover:border-[#D2826C] hover:bg-[#FFF7ED] transition-all duration-300 group">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-3 shadow-sm border-2 border-[#f0e3de] bg-white group-hover:bg-[#D2826C] group-hover:border-[#D2826C] transition-all">
+                <span className="group-hover:grayscale-0">{s.icon}</span>
+              </div>
+              <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{color:'#D2826C'}}>Step {s.num}</div>
+              <div className="font-semibold text-gray-800 text-sm mb-1">{s.title}</div>
+              <div className="text-xs text-gray-400 leading-relaxed">{s.desc}</div>
+              <div className="mt-3 text-xs text-[#D2826C] font-medium opacity-0 group-hover:opacity-100 transition-all">Click to learn more →</div>
+              {i < HOW_STEPS.length-1 && <div className="hidden md:block absolute -right-2 top-1/2 text-gray-300 text-xl z-10">›</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Testimonials() {
+  const scrollRef = useRef(null);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const id = setInterval(() => { el.scrollLeft += 1; if (el.scrollLeft >= el.scrollWidth - el.clientWidth) el.scrollLeft = 0; }, 30);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <section className="py-14 px-6" style={{background:'linear-gradient(135deg,#FFF7ED,#FCF8F6)'}}>
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="font-serif text-3xl text-gray-800 mb-2">Vendors Love Planora</h2>
+          <p className="text-gray-400 text-sm">Real stories from real wedding professionals</p>
+        </div>
+        <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-3" style={{scrollbarWidth:'none'}}>
+          {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+            <div key={i} className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 border border-pink-50 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style={{background:'#FFF7ED'}}>{t.avatar}</div>
+                <div>
+                  <div className="font-semibold text-gray-800 text-sm">{t.name}</div>
+                  <div className="text-xs text-gray-400">{t.type} · {t.city}</div>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm italic leading-relaxed mb-4">"{t.text}"</p>
+              <div className="flex items-center justify-between">
+                <div className="flex">{[1,2,3,4,5].map(s => <span key={s} style={{color:'#F59E0B'}}>★</span>)}</div>
+                <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">{t.earnings} earned</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingPlan({ onSignup }) {
+  const navigate = useNavigate();
+  const plans = [
+    { name:'Basic', price:'Free', color:'#A67E6B', bg:'#FEF5ED', features:['Personalized profile','15-photo portfolio','Searchable listing','5 leads/month'], cta:'Get Started', action: onSignup },
+    { name:'Pro', price:'₹2,499', period:'/mo', color:'#D2826C', bg:'#D2826C', textColor:'white', popular:true, features:['Unlimited leads','Priority listing','Dashboard analytics','Direct messaging','Review management'], cta:'Go Pro', action: () => navigate('/pricing-checkout?plan=pro') },
+    { name:'Premium', price:'₹4,999', period:'/mo', color:'#B8860B', bg:'#E7CBA0', features:['Everything in Pro','Top of search results','Verified badge priority','Dedicated account manager','Featured in homepage'], cta:'Go Premium', action: () => navigate('/pricing-checkout?plan=premium') },
   ];
   return (
-    <section className="py-8 px-6 bg-white">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="font-serif text-3xl font-bold text-gray-800 mb-10 border-t border-[#f0e3de] pt-8">How It Works</h2>
-        <div className="bg-[#FAF6F4] py-8 px-4 rounded-xl border border-[#efe9e6] flex flex-col justify-center items-center shadow-inner">
-           <div className="flex flex-col md:flex-row justify-between items-center relative w-full max-w-5xl">
-             <div className="absolute top-1/2 left-4 right-4 h-[2px] bg-[#E1C1B3] hidden md:block -z-10"></div>
-             {steps.map((s, i) => (
-               <div key={i} className="flex flex-row items-center mb-4 md:mb-0 bg-[#FAF6F4] px-4 py-1">
-                 <div className="w-8 h-8 rounded-full bg-[#E1C1B3] text-white flex items-center justify-center font-bold text-sm shadow-sm z-10">
-                   {s.num}
-                 </div>
-                 <p className="ml-3 text-sm font-semibold text-gray-800">{s.text}</p>
-                 {i < steps.length - 1 && <span className="md:hidden mx-2 text-[#E1C1B3]">↓</span>}
-                 {i < steps.length - 1 && <span className="hidden md:block ml-8 text-gray-400 font-light text-xl">→</span>}
-               </div>
-             ))}
-           </div>
+    <section id="pricing" className="py-16 px-6" style={{background:'#FCF8F6'}}>
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="font-serif text-3xl text-gray-800 mb-2">Simple, Transparent Pricing</h2>
+          <p className="text-gray-400 text-sm">Start free. Upgrade when you're ready to scale.</p>
         </div>
+        <div className="grid md:grid-cols-3 gap-6 items-center">
+          {plans.map((p, i) => (
+            <div key={p.name} className={`rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col ${i===1 ? 'md:-translate-y-4 shadow-xl' : ''}`}>
+              <div className="py-5 text-center" style={{background: i===1 ? p.bg : '#FEF5ED'}}>
+                <div className="font-bold text-sm" style={{color: i===1 ? 'white' : p.color}}>{p.name}</div>
+                {p.popular && <div className="text-xs text-white/80 uppercase tracking-widest">Most Popular</div>}
+              </div>
+              <div className="p-6 bg-white flex-1 flex flex-col">
+                <div className="text-center mb-6">
+                  <span className="font-serif text-4xl text-gray-800">{p.price}</span>
+                  {p.period && <span className="text-gray-400 text-sm">{p.period}</span>}
+                </div>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {p.features.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-xs text-gray-600">
+                      <span style={{color:'#D2826C'}} className="mt-0.5 flex-shrink-0">✓</span>{f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={p.action}
+                  className="w-full py-3 text-sm font-bold !rounded-xl transition-all"
+                  style={i===1 ? {background:'#D2826C', color:'white'} : {border:'2px solid #D2826C', color:'#D2826C', background:'transparent'}}>
+                  {p.cta}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-center text-xs text-gray-400 mt-6">All plans include a 14-day free trial · No lock-in contracts</p>
       </div>
     </section>
   );
 }
 
-function PricingPlan() {
+function FinalCTA({ onSignup }) {
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('accessToken');
   return (
-    <section id="pricing" className="py-12 px-6 bg-[#FCF8F6]">
-      <div className="max-w-6xl mx-auto">
-         <h2 className="font-serif text-3xl font-bold text-gray-800 mb-10 text-center flex items-center justify-center">
-            <span className="text-[#C19280] mr-2">❦</span> Pricing Plans <span className="text-[#C19280] ml-2">❦</span>
-         </h2>
-         <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto relative items-center justify-center">
-           
-           {/* Left Floating Menu Details (Stylistic) */}
-           <div className="hidden md:block w-48 bg-white border border-[#EBE3DF] rounded-xl shadow self-stretch">
-               <div className="flex justify-between items-center text-xs p-4 border-b border-gray-100 font-bold bg-[#FAF6F4] rounded-t-xl text-gray-800">
-                  <span>Basic</span> <span className="text-[#C19280]">Free</span>
-               </div>
-               <div className="flex flex-col text-xs text-gray-600 font-medium">
-                  <div className="p-3 border-b flex justify-between"><span>Profile Setup</span> <span className="text-gray-400">›</span></div>
-                  <div className="p-3 border-b flex justify-between"><span>My Profile Gallery</span> <span className="text-gray-400">›</span></div>
-                  <div className="p-3 border-b flex justify-between"><span>Booking Requests</span> <span className="text-gray-400">›</span></div>
-                  <div className="p-3 border-b flex justify-between"><span>Messages</span> <span className="text-gray-400">›</span></div>
-               </div>
-           </div>
-
-           {/* Cards Wrapper */}
-           <div className="flex flex-col md:flex-row gap-6 flex-1">
-             
-             {/* Basic Card */}
-             <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex-1 flex flex-col overflow-hidden">
-                <div className="bg-[#FEF5ED] text-[#A67E6B] font-bold text-center py-4 border-b border-[#F7E7DF]">
-                   Basic
-                </div>
-                <div className="p-6 text-center flex flex-col items-center flex-1">
-                   <h3 className="text-3xl font-serif text-gray-800 mb-6">Free</h3>
-                   <ul className="text-xs text-gray-600 space-y-3 text-left w-full pl-4 mb-8">
-                     <li className="flex items-center"><span className="text-pink-300 mr-2">✓</span> Personalized profile</li>
-                     <li className="flex items-center"><span className="text-pink-300 mr-2">✓</span> 15 photos portfolio cap</li>
-                     <li className="flex items-center"><span className="text-pink-300 mr-2">✓</span> Searchable in categories</li>
-                   </ul>
-                </div>
-             </div>
-
-             {/* PRO Card */}
-             <div className="bg-white rounded-xl shadow-md border border-gray-100 flex-1 flex flex-col overflow-hidden transform md:-translate-y-2 relative">
-                <div className="bg-[#D2826C] text-white font-bold text-center py-4 flex flex-col justify-center items-center">
-                   Pro <span className="text-[10px] font-normal uppercase tracking-widest text-[#f5c6ba]">Most Popular</span>
-                </div>
-                <div className="p-6 text-center flex flex-col items-center bg-[#FCF8F6] flex-1">
-                   <h3 className="text-3xl font-serif text-gray-800 mb-6">$49<span className="text-sm text-gray-500 font-sans">/mo</span></h3>
-                   <ul className="text-xs text-gray-600 space-y-3 text-left w-full pl-4 mb-8">
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Direct Inquiries</li>
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Dashboard Manager</li>
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Build Reviews</li>
-                   </ul>
-                   <button onClick={() => navigate('/pricing-checkout')} className="mt-auto px-6 py-2 bg-[#D2826C] text-white text-xs font-bold uppercase rounded hover:bg-[#b06752] transition">Select Plan</button>
-                </div>
-             </div>
-
-             {/* Premium Card */}
-             <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex-1 flex flex-col overflow-hidden">
-                <div className="bg-[#E7CBA0] text-gray-800 font-bold text-center py-4 flex flex-col justify-center items-center relative overflow-hidden">
-                   Premium
-                   <div className="absolute opacity-20 text-white right-0 top-0 text-3xl">✧</div>
-                </div>
-                <div className="p-6 text-center flex flex-col items-center flex-1">
-                   <h3 className="text-3xl font-serif text-gray-800 mb-6">$99<span className="text-sm text-gray-500 font-sans">/mo</span></h3>
-                   <ul className="text-xs text-gray-600 space-y-3 text-left w-full pl-4 mb-8">
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Direct Inquiries</li>
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Priority Placement</li>
-                     <li className="flex items-center"><span className="text-[#D2826C] mr-2">✓</span> Unlimited Photos</li>
-                   </ul>
-                   <button onClick={() => navigate('/pricing-checkout')} className="mt-auto px-6 py-2 border border-[#E7CBA0] text-gray-700 text-xs font-bold uppercase rounded hover:bg-[#FAF6F4] transition">Select Plan</button>
-                </div>
-             </div>
-
-           </div>
-         </div>
-      </div>
-    </section>
-  );
-}
-
-function ProfileOverview() {
-  return (
-    <section className="py-12 px-6 bg-[#FCF8F6]">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-sm border border-[#EBE3DF] p-6 relative overflow-hidden">
-        <h3 className="font-serif text-lg font-bold text-gray-800 mb-4 flex items-center"><span className="text-[#E1C1B3] mr-2">⌂</span> Profile Overview <span className="ml-auto text-gray-400 text-sm">› ›</span></h3>
-        <div className="flex flex-col md:flex-row gap-4 h-48">
-          <div className="md:w-1/4 h-full bg-cover bg-center rounded custom-shadow" style={{backgroundImage: "url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400')"}}></div>
-          <div className="md:w-1/4 h-full bg-cover bg-center rounded custom-shadow" style={{backgroundImage: "url('https://images.unsplash.com/photo-1509927083803-4bd519298ac4?auto=format&fit=crop&q=80&w=400')"}}></div>
-          <div className="md:w-1/2 h-full bg-gray-100 rounded bg-cover bg-center relative" style={{backgroundImage: "url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=600')"}}>
-             <div className="absolute inset-0 flex items-center justify-center p-4">
-                <div className="bg-white/80 backdrop-blur border border-white px-8 py-4 rounded shadow-lg text-center">
-                    <span className="font-bold text-gray-800 text-sm block">Luxury Setup Showreel</span>
-                    <span className="text-xs text-[#DB927D]">Play Video</span>
-                </div>
-             </div>
-          </div>
-        </div>
+    <section className="py-20 px-6 text-center relative overflow-hidden" style={{background:'linear-gradient(135deg,#4a1c0a,#8b3a1e)'}}>
+      <div className="absolute inset-0 opacity-10" style={{backgroundImage:"url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&auto=format&fit=crop')", backgroundSize:'cover'}} />
+      <div className="relative z-10 max-w-2xl mx-auto">
+        <div className="text-4xl mb-4">🎊</div>
+        <h2 className="font-serif text-4xl text-white mb-4">Ready to Grow Your Business?</h2>
+        <p className="text-gray-300 mb-8">Join 2,000+ wedding professionals already growing with Planora. Start free today.</p>
+        <button onClick={isLoggedIn ? () => navigate('/dashboard/vendor') : onSignup}
+          className="text-white px-10 py-4 font-bold text-sm shadow-2xl transition-all hover:scale-105"
+          style={{background:'#D2826C', borderRadius:'999px'}}>
+          {isLoggedIn ? 'Go to Dashboard →' : 'Join as Vendor — It\'s Free →'}
+        </button>
       </div>
     </section>
   );
 }
 
 export default function VendorPortal() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const [showSignup, setShowSignup] = useState(false);
+
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
     <div className="font-sans text-gray-800 bg-white">
-      <Nav />
-      <Hero />
+      {showSignup && <SignupModal onClose={() => setShowSignup(false)} />}
+      <Nav onSignup={() => setShowSignup(true)} />
+      <Hero onSignup={() => setShowSignup(true)} />
       <Features />
-      <Categories />
+      <Categories onSignup={() => setShowSignup(true)} />
       <HowItWorks />
-      <PricingPlan />
-      <ProfileOverview />
+      <Testimonials />
+      <PricingPlan onSignup={() => setShowSignup(true)} />
+      <FinalCTA onSignup={() => setShowSignup(true)} />
       <Footer />
     </div>
   );

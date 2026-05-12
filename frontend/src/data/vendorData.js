@@ -1,0 +1,238 @@
+export const MOCK_VENDORS = [
+  {
+    id:1, name:'Ravi Kapoor Photography', category:'Photographer', city:'Mumbai', rating:4.9, reviewCount:128,
+    startingPrice:75000, priceRange:'₹₹₹', bookingsThisMonth:34, isVerified:true, trending:true,
+    coverImage:'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1525772764200-be829a350797?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop',
+    ],
+    description:'With over 12 years of experience capturing timeless wedding moments across India, Ravi Kapoor Photography is renowned for its cinematic style and attention to detail. We specialize in candid photography that tells the authentic story of your special day.',
+    services:['Candid Photography','Cinematic Videography','Pre-Wedding Shoot','Drone Aerial Shots','Same-Day Edit Highlights','Photo Album & Prints'],
+    packages:[
+      { name:'Silver', price:75000, desc:'8 hrs coverage, 400 edited photos, 1 photographer' },
+      { name:'Gold', price:125000, desc:'12 hrs coverage, 800 edited photos, 2 photographers + video' },
+      { name:'Platinum', price:200000, desc:'Full day, unlimited photos, cinematic film, drone, album' },
+    ],
+    reviews:[
+      { name:'Priya Sharma', rating:5, date:'March 2025', comment:'Absolutely stunning work! Every photo was a masterpiece. Ravi captured moments we did not even notice.' },
+      { name:'Aman & Neha', rating:5, date:'February 2025', comment:'Professional, creative, and so easy to work with. Our wedding album is breathtaking!' },
+      { name:'Rohan Mehta', rating:4, date:'January 2025', comment:'Great photography and very punctual. Highly recommend for candid shots.' },
+    ],
+  },
+  {
+    id:2, name:'Devika Narain Events', category:'Event Planner', city:'Delhi', rating:4.8, reviewCount:96,
+    startingPrice:150000, priceRange:'₹₹₹', bookingsThisMonth:28, isVerified:true, trending:false,
+    coverImage:'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=600&auto=format&fit=crop',
+    ],
+    description:'Devika Narain Events is Delhi\'s premier full-service wedding planning company. With a portfolio of 200+ luxury weddings, we handle everything from vendor coordination to day-of management so you can enjoy every moment.',
+    services:['Full Wedding Planning','Venue Selection','Vendor Management','Budget Planning','Day-of Coordination','Decor Design','Guest Management'],
+    packages:[
+      { name:'Coordinator', price:150000, desc:'Day-of coordination, vendor liaison, timeline management' },
+      { name:'Partial Planning', price:300000, desc:'Last 3 months planning, vendor booking, coordination' },
+      { name:'Full Planning', price:600000, desc:'End-to-end planning from engagement to reception' },
+    ],
+    reviews:[
+      { name:'Ananya & Vikram', rating:5, date:'April 2025', comment:'Devika made our dream wedding a reality. Not a single detail was missed!' },
+      { name:'Sonia Kapoor', rating:5, date:'March 2025', comment:'The most stress-free wedding planning experience. Worth every rupee.' },
+      { name:'Rahul Gupta', rating:4, date:'February 2025', comment:'Excellent coordination. The day went flawlessly.' },
+    ],
+  },
+  {
+    id:3, name:'Spice Garden Catering', category:'Caterer', city:'Mumbai', rating:4.7, reviewCount:214,
+    startingPrice:850, priceRange:'₹₹', bookingsThisMonth:52, isVerified:true, trending:true,
+    coverImage:'https://images.unsplash.com/photo-1555244162-803834f70033?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1555244162-803834f70033?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop',
+    ],
+    description:'Spice Garden has been serving authentic Indian cuisine at weddings across Mumbai for over 15 years. From traditional Maharashtrian to Mughlai, Punjabi to South Indian — we craft menus that delight every guest.',
+    services:['Multi-Cuisine Buffet','Live Counters','Customized Menu Planning','Dessert Stations','Cocktail Canapés','Jain & Vegan Options','Staff & Service'],
+    packages:[
+      { name:'Starter', price:850, desc:'Per plate — 30 items, 2 live counters, basic service' },
+      { name:'Classic', price:1400, desc:'Per plate — 50 items, 4 live counters, full service staff' },
+      { name:'Royal', price:2200, desc:'Per plate — 80+ items, unlimited live counters, premium crockery' },
+    ],
+    reviews:[
+      { name:'Preethi & Karthik', rating:5, date:'April 2025', comment:'The food was absolutely incredible! Guests are still talking about the live pani puri counter.' },
+      { name:'Mehta Family', rating:5, date:'March 2025', comment:'Perfectly cooked, beautifully presented. The Mughlai section was outstanding.' },
+      { name:'Ritesh Singh', rating:4, date:'February 2025', comment:'Great variety and quantity. Service staff was prompt and professional.' },
+    ],
+  },
+  {
+    id:4, name:'Pehla Nasha Decor', category:'Decoration', city:'Jaipur', rating:4.6, reviewCount:73,
+    startingPrice:80000, priceRange:'₹₹', bookingsThisMonth:19, isVerified:true, trending:false,
+    coverImage:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&auto=format&fit=crop',
+    ],
+    description:'Pehla Nasha Decor transforms wedding spaces into breathtaking dreamscapes. Specializing in Rajasthani heritage themes and contemporary fusion décor, we create immersive environments that reflect your unique love story.',
+    services:['Floral Decoration','Stage & Mandap Design','Entrance Decor','Table Centerpieces','Lighting & Draping','Themed Setups','Photo Booths'],
+    packages:[
+      { name:'Essential', price:80000, desc:'Stage & mandap, basic floral, entrance arch' },
+      { name:'Signature', price:180000, desc:'Full venue decor, premium florals, custom lighting' },
+      { name:'Bespoke', price:350000, desc:'Complete thematic transformation, all areas, luxury florals' },
+    ],
+    reviews:[
+      { name:'Ishaan & Kavya', rating:5, date:'March 2025', comment:'The mandap was beyond our imagination. Pehla Nasha truly brought our vision to life!' },
+      { name:'Sanjay Rathore', rating:4, date:'February 2025', comment:'Beautiful decor, great team. Would recommend for royal heritage weddings.' },
+      { name:'Divya Sharma', rating:5, date:'January 2025', comment:'Stunning floral arrangements. Every corner was Instagram-worthy!' },
+    ],
+  },
+  {
+    id:5, name:'Manish Malhotra Bridal', category:'Bridal Wear', city:'Delhi', rating:4.9, reviewCount:187,
+    startingPrice:85000, priceRange:'₹₹₹', bookingsThisMonth:41, isVerified:true, trending:true,
+    coverImage:'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&auto=format&fit=crop',
+    ],
+    description:'Manish Malhotra Bridal is synonymous with luxury Indian bridal couture. Every outfit is a masterpiece of embroidery, craftsmanship, and design — custom-made to make you look like royalty on your wedding day.',
+    services:['Custom Bridal Lehenga','Saree Draping','Trousseau Planning','Groom Sherwani','Bridesmaid Outfits','Jewelry Consultation','Trial Sessions'],
+    packages:[
+      { name:'Classic Bride', price:85000, desc:'Custom lehenga, 3 fittings, standard embroidery' },
+      { name:'Signature Bride', price:175000, desc:'Custom design, premium fabrics, intricate handwork' },
+      { name:'Couture Bride', price:350000, desc:'One-of-a-kind masterpiece, full trousseau planning' },
+    ],
+    reviews:[
+      { name:'Aisha Kapoor', rating:5, date:'April 2025', comment:'I felt like an absolute queen! The lehenga was everything I dreamed of and more.' },
+      { name:'Meera Nair', rating:5, date:'March 2025', comment:'Impeccable craftsmanship. The team understood exactly what I wanted.' },
+      { name:'Pooja Malhotra', rating:5, date:'February 2025', comment:'Worth every penny. The attention to detail was extraordinary.' },
+    ],
+  },
+  {
+    id:6, name:'Noor Photography', category:'Photographer', city:'Hyderabad', rating:4.5, reviewCount:62,
+    startingPrice:45000, priceRange:'₹₹', bookingsThisMonth:15, isVerified:true, trending:false,
+    coverImage:'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop',
+    ],
+    description:'Noor Photography brings a fresh, vibrant perspective to wedding photography in Hyderabad. Specializing in natural light and documentary-style captures, we preserve the authentic emotions of your celebration.',
+    services:['Wedding Photography','Engagement Shoot','Bridal Portrait','Candid Coverage','Online Gallery','Edited Photo Delivery'],
+    packages:[
+      { name:'Basic', price:45000, desc:'6 hrs coverage, 300 edited photos, online gallery' },
+      { name:'Standard', price:75000, desc:'10 hrs coverage, 500 edited photos, photo book' },
+      { name:'Premium', price:120000, desc:'Full day + video, 700+ photos, luxury album' },
+    ],
+    reviews:[
+      { name:'Ayesha & Faisal', rating:5, date:'March 2025', comment:'Beautiful candid captures. Noor has a great eye for emotion.' },
+      { name:'Priya Reddy', rating:4, date:'February 2025', comment:'Very professional and easy to work with. Great photos!' },
+      { name:'Kiran Kumar', rating:4, date:'January 2025', comment:'Delivered on time, beautiful editing style.' },
+    ],
+  },
+  {
+    id:7, name:'Royal Tent House', category:'Venue', city:'Udaipur', rating:4.8, reviewCount:109,
+    startingPrice:500000, priceRange:'₹₹₹', bookingsThisMonth:23, isVerified:true, trending:false,
+    coverImage:'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&auto=format&fit=crop',
+    ],
+    description:'Royal Tent House offers an unparalleled lakeside wedding experience in the City of Lakes. Our heritage property with panoramic views of Lake Pichola provides the most romantic backdrop for your royal celebration.',
+    services:['Lakeside Ceremony Lawn','Heritage Hall (300 guests)','Bridal Suite','Catering Partnership','Valet Parking','In-house Decor Team','24/7 Concierge'],
+    packages:[
+      { name:'Ceremony Only', price:500000, desc:'4 hrs lawn rental, basic setup, parking' },
+      { name:'Wedding Day', price:1200000, desc:'Full day access, bridal suite, catering coordination' },
+      { name:'Royal Package', price:2500000, desc:'3-day event, all areas, in-house catering, decor' },
+    ],
+    reviews:[
+      { name:'Kabir & Radha', rating:5, date:'April 2025', comment:'The view of Lake Pichola during our ceremony was absolutely magical. A dream come true.' },
+      { name:'Sharma Family', rating:5, date:'March 2025', comment:'World-class hospitality. Our guests are still raving about the venue.' },
+      { name:'Neha Agarwal', rating:4, date:'February 2025', comment:'Stunning property. Management was very accommodating.' },
+    ],
+  },
+  {
+    id:8, name:'Mehndi Masters', category:'Mehendi Artist', city:'Mumbai', rating:4.7, reviewCount:145,
+    startingPrice:15000, priceRange:'₹', bookingsThisMonth:67, isVerified:true, trending:true,
+    coverImage:'https://images.unsplash.com/photo-1611558709798-e009c8fd7706?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1611558709798-e009c8fd7706?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1603197839325-e7e72a6e91a3?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1588625500633-a70b8d0a6629?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&auto=format&fit=crop',
+    ],
+    description:'Mehndi Masters is Mumbai\'s most sought-after Mehndi studio with a team of 8 expert artists. Known for intricate Rajasthani and Arabic designs, we make every bride\'s Mehndi ceremony a cherished memory.',
+    services:['Bridal Mehndi (Full Arms)','Bridesmaid Mehndi','Arabic Designs','Indo-Western Fusion','Feet Mehndi','Groom Hand Mehndi','On-location Service'],
+    packages:[
+      { name:'Bride Basic', price:15000, desc:'Both hands & feet, standard Rajasthani design' },
+      { name:'Bride Signature', price:28000, desc:'Full arms & legs, intricate bridal design, 1 artist' },
+      { name:'Full Bridal Party', price:60000, desc:'Bride + 8 bridesmaids, all designs, on-location' },
+    ],
+    reviews:[
+      { name:'Riya Kapoor', rating:5, date:'April 2025', comment:'The most beautiful mehndi I have ever seen! Everyone was in awe.' },
+      { name:'Sunita Joshi', rating:5, date:'March 2025', comment:'Incredibly detailed work. The portrait of my husband was perfect!' },
+      { name:'Arjun & Priya', rating:4, date:'February 2025', comment:'Very professional artists. Completed the full party mehndi efficiently.' },
+    ],
+  },
+  {
+    id:9, name:'Bliss Makeup Studio', category:'Makeup Artist', city:'Delhi', rating:4.8, reviewCount:201,
+    startingPrice:25000, priceRange:'₹₹', bookingsThisMonth:38, isVerified:true, trending:false,
+    coverImage:'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&auto=format&fit=crop',
+    ],
+    description:'Bliss Makeup Studio is Delhi\'s award-winning bridal makeup destination. Our team of certified artists specializes in HD airbrush makeup that looks flawless in photos and lasts all day — from the first ritual to the last dance.',
+    services:['HD Airbrush Bridal Makeup','Traditional Bridal Look','Indo-Western Makeup','Hair Styling','Saree Draping','Pre-Bridal Facial','Trial Session'],
+    packages:[
+      { name:'Essentials', price:25000, desc:'Bridal makeup + hair, trial session included' },
+      { name:'Glow Bride', price:45000, desc:'HD airbrush, hair, draping, pre-bridal facial' },
+      { name:'Bliss Package', price:75000, desc:'Bride + mother + 4 bridesmaids, full glam team' },
+    ],
+    reviews:[
+      { name:'Aditi Sharma', rating:5, date:'April 2025', comment:'I felt like a goddess! The makeup lasted 14 hours without touch-ups.' },
+      { name:'Meghna Bose', rating:5, date:'March 2025', comment:'The team is so talented and calming. Made my morning stress-free.' },
+      { name:'Kavya Reddy', rating:5, date:'February 2025', comment:'Picture-perfect results. My photos look absolutely stunning.' },
+    ],
+  },
+  {
+    id:10, name:'Melodies by Arjun', category:'DJ & Music', city:'Bangalore', rating:4.6, reviewCount:88,
+    startingPrice:35000, priceRange:'₹₹', bookingsThisMonth:31, isVerified:true, trending:true,
+    coverImage:'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&auto=format&fit=crop',
+    images:[
+      'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop',
+    ],
+    description:'Melodies by Arjun delivers electrifying entertainment that keeps your wedding guests dancing all night. From romantic sangeet performances to high-energy reception DJ sets — we set the perfect vibe for every moment.',
+    services:['Professional DJ Setup','Live Band Integration','Sangeet Night Package','Custom Playlist Curation','LED Dance Floor','MC Services','Sound & Lighting Equipment'],
+    packages:[
+      { name:'Celebration', price:35000, desc:'4 hrs DJ, basic sound & lights, 1 setup' },
+      { name:'Party Night', price:65000, desc:'6 hrs DJ + MC, premium sound, LED uplighting' },
+      { name:'Full Wedding', price:120000, desc:'Multi-day coverage, live band + DJ, full production' },
+    ],
+    reviews:[
+      { name:'Rohan & Sia', rating:5, date:'April 2025', comment:'The dance floor was packed the entire night! Arjun reads the crowd perfectly.' },
+      { name:'Amit Verma', rating:4, date:'March 2025', comment:'Great music selection, very professional setup. Highly recommended!' },
+      { name:'Sneha Jain', rating:5, date:'February 2025', comment:'Our sangeet night was unforgettable. The live music transitions were seamless.' },
+    ],
+  },
+];
+
+export function getVendorById(id) {
+  return MOCK_VENDORS.find(v => v.id === parseInt(id)) || null;
+}

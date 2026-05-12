@@ -18,7 +18,9 @@ const bookingSchema = new mongoose.Schema({
     },
     coupleNames: { type: String },
     weddingDateLocation: { type: String }, // e.g. "October 12th, Udaipur"
-    message: { type: String }
+    message: { type: String },
+    amount: { type: Number, default: 0 },
+    commission: { type: Number, default: 0 }
 }, {timestamps: true});
 
 module.exports = mongoose.model('Booking', bookingSchema);
